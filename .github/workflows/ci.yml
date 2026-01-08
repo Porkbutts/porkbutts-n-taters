@@ -1,0 +1,56 @@
+# TEMPLATE: Replace this with your project's CI workflow.
+# This is an example workflow - customize for your tech stack.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # TEMPLATE: Uncomment and customize the job for your tech stack
+
+  # Example: Node.js project
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         cache: 'npm'
+  #     - run: npm ci
+  #     - run: npm run lint
+  #     - run: npm test
+  #     - run: npm run build
+
+  # Example: Python project
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12'
+  #     - run: pip install -r requirements.txt
+  #     - run: pytest
+
+  # Example: Go project
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-go@v5
+  #       with:
+  #         go-version: '1.22'
+  #     - run: go build ./...
+  #     - run: go test ./...
+
+  # Placeholder job - remove when adding real jobs
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Configure CI for your project"

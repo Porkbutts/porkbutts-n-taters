@@ -1,0 +1,29 @@
+# TEMPLATE: Define code ownership for your project.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# These owners will be requested for review when someone opens a pull request
+# that modifies code that they own.
+
+# Default owners for everything in the repo
+# * @your-org/team-name
+
+# Examples of more specific ownership:
+
+# Documentation
+# /docs/ @your-org/docs-team
+
+# Frontend code
+# /src/components/ @your-org/frontend-team
+# /src/pages/ @your-org/frontend-team
+
+# Backend code
+# /src/api/ @your-org/backend-team
+# /src/services/ @your-org/backend-team
+
+# Infrastructure
+# /infra/ @your-org/platform-team
+# /.github/ @your-org/platform-team
+
+# Security-sensitive files
+# /src/auth/ @your-org/security-team
+# SECURITY.md @your-org/security-team

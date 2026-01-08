@@ -1,0 +1,11 @@
+{
+  "_template_notice": "Configure Claude Code settings for your project. Remove this field after customization.",
+  "enabledMcpServers": {
+    "_comment": "Add MCP servers your project needs. Examples below:",
+    "_example_github": "github@claude-plugins-official",
+    "_example_playwright": "playwright@claude-plugins-official"
+  },
+  "permissions": {
+    "_comment": "Configure tool permissions. See Claude Code docs for options."
+  }
+}
