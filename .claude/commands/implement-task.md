@@ -1,13 +1,5 @@
 # Implement Task
 
-<!--
-  TEMPLATE: Example slash command for implementing tasks.
-  Customize or replace with commands relevant to your workflow.
-
-  Usage: /implement-task <task-id>
-  Example: /implement-task 001
--->
-
 Implement task $ARGUMENTS following the task specification.
 
 ## Instructions
@@ -15,6 +7,7 @@ Implement task $ARGUMENTS following the task specification.
 1. Read the task specification from `docs/tasks/$ARGUMENTS-*.md`
 2. Review related documentation:
    - Technical design in `docs/30-tech-design.md`
+   - Brand guidelines in `docs/20-brand-guidelines.md`
    - Relevant backlog items in `docs/40-backlog.md`
 3. Implement the task following the acceptance criteria
 4. Write tests as specified in the task

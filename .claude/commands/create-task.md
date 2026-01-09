@@ -1,13 +1,5 @@
 # Create Task Specification
 
-<!--
-  TEMPLATE: Example slash command for creating new task specifications.
-  Customize or replace with commands relevant to your workflow.
-
-  Usage: /create-task <task-name>
-  Example: /create-task add-user-authentication
--->
-
 Create a new task specification for: $ARGUMENTS
 
 ## Instructions
@@ -25,6 +17,7 @@ Brief description of what this task accomplishes.
 ## Background
 Context and motivation for this task. Reference relevant:
 - PRD sections from `docs/10-prd.md`
+- Brand Guidelines from `docs/20-brand-guidelines.md`
 - User stories from `docs/40-backlog.md`
 - Technical design from `docs/30-tech-design.md`
 
