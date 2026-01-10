@@ -11,7 +11,7 @@ An opinionated collection of skills to add structured workflows to vibecoding.
 ### From GitHub
 
 ```bash
-/plugin marketplace add Porkbutts/claude
+/plugin marketplace add Porkbutts/porkbutts-n-taters
 /plugin install effective-design@porkbutts-n-taters
 ```
 
