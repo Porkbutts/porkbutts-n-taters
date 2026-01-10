@@ -48,3 +48,9 @@ Personal workflow for getting better results out of vibecoding.
 
 - Trigger with `/reflect` or "learn from this" after a back-and-forth where you course-corrected Claude
 - Output: Markdown file with context, problem, resolution, and guidance
+
+**functional-prototype** - Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data.
+
+- Triggers when you provide a PRD, spec, or feature description and want a clickable prototype
+- Generates realistic mock data and stubbed API functions with simulated delays
+- Output: Working prototype with `docs/next-steps.md` explaining how to replace stubs with real integrations
