@@ -1,6 +1,6 @@
 ---
 name: functional-prototype
-description: Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data. Generates docs/next-steps.md explaining how to replace stubs with real integrations. Use when user provides a PRD, spec, or feature description and wants a clickable prototype to demonstrate user stories.
+description: Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data. Generates docs/next-steps.md explaining how to replace stubs with real integrations. Use when user provides a PRD, spec, or feature description and wants a clickable prototype to demonstrate user stories. Trigger when user mentions: build a prototype, make a demo, implement this PRD, create a mockup, prototype this spec, make it clickable, or build from this spec. This skill creates working UI with mock data and stubbed integrations—ideal for validating flows before full implementation.
 ---
 
 # Functional Prototype Builder
