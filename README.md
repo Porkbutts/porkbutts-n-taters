@@ -38,22 +38,11 @@ Personal workflow for getting better results out of vibecoding.
 - Interview phases: Core Concept, User Scenarios, Technical Context, Scope Boundaries
 - Output: Structured PRD with roles, scenarios, acceptance criteria, and technical context
 
-**reflect** - Capture learnings from conversation after Claude made mistakes or needed correction. Frames insights as "if we were starting over" guidance for future sessions.
+**reflect** - Capture lessons from conversation after Claude made mistakes or needed correction. Frames insights as "if we were starting over" guidance for future sessions.
 
 - Trigger with "reflect", "review our mistakes", "learn from this", or similar phrases after a back-and-forth where you course-corrected Claude
-- Output: Dated markdown file (e.g., `2025-01-15-expo-sdk-version.md`) with the right approach, what to avoid, and why it matters
-- Choose where to save: project (`docs/learnings/`) for context-specific learnings, or personal (`~/.claude/learnings/`) for broadly applicable ones
-- Maintains an index mapping activities to learning docs—reference in your `CLAUDE.md` for proactive use during planning
-
-To use personal learnings across all projects, add this to `~/.claude/CLAUDE.md`:
-
-```markdown
-## Learnings
-
-Before starting any task, consult `~/.claude/learnings/INDEX.md` to check for relevant learnings that apply to the work at hand. These capture lessons from past sessions to avoid repeating mistakes.
-
-Read the full learning file when a "Consult when" trigger matches what you're about to do.
-```
+- Output: Dated markdown file in `~/.claude/lessons/` (e.g., `2025-01-15-expo-sdk-version.md`) with the right approach and what to avoid
+- Automatically updates `~/.claude/CLAUDE.md` with a lessons table for proactive consultation during planning
 
 **functional-prototype** - Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data.
 
