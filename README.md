@@ -42,18 +42,14 @@ Personal workflow for getting better results out of vibecoding.
 
 - Trigger with "reflect", "review our mistakes", "learn from this", or similar phrases after a back-and-forth where you course-corrected Claude
 - Output: Dated markdown file (e.g., `2025-01-15-expo-sdk-version.md`) with the right approach, what to avoid, and why it matters
-- Choose where to save: project (`docs/learnings/`) for context-specific learnings, or personal (`~/.claude/learnings/`) for broadly applicable ones
-- Maintains an index mapping activities to learning docs—reference in your `CLAUDE.md` for proactive use during planning
+- Choose where to save: project (`.claude/learnings/`) for context-specific learnings, or personal (`~/.claude/learnings/`) for broadly applicable ones
+- Maintains an index mapping activities to learning docs
 
-To use personal learnings across all projects, add this to `~/.claude/CLAUDE.md`:
+**consult-learnings** - Proactively check for relevant learnings before starting implementation tasks.
 
-```markdown
-## Learnings
-
-Before starting any task, consult `~/.claude/learnings/INDEX.md` to check for relevant learnings that apply to the work at hand. These capture lessons from past sessions to avoid repeating mistakes.
-
-Read the full learning file when a "Consult when" trigger matches what you're about to do.
-```
+- Claude invokes this automatically at the start of planning phases
+- Reads from `.claude/learnings/INDEX.md` (project) and `~/.claude/learnings/INDEX.md` (personal)
+- No manual CLAUDE.md setup required—the skill is included in Claude's prompt automatically
 
 **functional-prototype** - Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data.
 
