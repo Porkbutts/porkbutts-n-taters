@@ -6,7 +6,7 @@ Create a PR for current changes with version bump and README update.
 
 1. **Check for changes**: Run `git status` and `git diff` to understand what changed
 2. **Update README.md**: If any skill content changed, update the corresponding skill description in README
-3. **Determine version bump**: Ask user if this is a patch (fixes), minor (features), or major (breaking changes)
+3. **Determine version bump**: Read current version from `.claude-plugin/plugin.json`, then ask user which bump type with actual next versions shown (e.g., "Patch (1.1.2)", "Minor (1.2.0)")
 4. **Bump versions**: Increment version in BOTH files (keep them in sync):
    - `.claude-plugin/plugin.json`
    - `.claude-plugin/marketplace.json`
