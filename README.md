@@ -48,4 +48,4 @@ Personal workflow for getting better results out of vibecoding.
 **functional-prototype** - Build working prototypes from PRDs with mock data and stubbed integrations to validate flows before full implementation.
 
 - Triggers: "build a prototype", "functional prototype", "make a demo", "implement this PRD", "prototype this spec"
-- Output: Working clickable prototype with `docs/next-steps.md` explaining how to replace stubs with real integrations
+- Output: Working clickable prototype; optionally generates `docs/integration-guide.md` (asks first) documenting how to replace stubs with real integrations

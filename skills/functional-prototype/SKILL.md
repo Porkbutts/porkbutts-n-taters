@@ -45,11 +45,11 @@ For each screen:
 - Handle empty/error states
 - Complete navigation between screens
 
-### 4. Generate next-steps.md
+### 4. Generate Integration Guide (Optional)
 
-After prototype is complete, create `docs/next-steps.md` following [references/next-steps-template.md](references/next-steps-template.md).
+After prototype is complete, ask user: *"Would you like me to generate an integration guide documenting how to replace stubs with real implementations?"*
 
-Document every stub: what it does now, what real integration replaces it, which files to modify.
+If yes, create `docs/integration-guide.md` following [references/integration-guide-template.md](references/integration-guide-template.md).
 
 ## Output Checklist
 
@@ -58,4 +58,3 @@ Document every stub: what it does now, what real integration replaces it, which 
 - [ ] Mock data looks realistic
 - [ ] Stubs simulate async behavior (delays)
 - [ ] Loading and empty states handled
-- [ ] `docs/next-steps.md` documents all stubs
