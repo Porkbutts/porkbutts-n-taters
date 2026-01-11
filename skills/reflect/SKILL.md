@@ -15,11 +15,15 @@ Analyze the current conversation to extract learnings from mistakes or correctio
 
 3. **Synthesize the learning**: Extract the actionable insight - frame it as "if we were starting over, here's the right approach" not "here's how we fixed a mistake"
 
-4. **Ask where to save**: Confirm the file path with the user. Suggest `docs/learnings/YYYY-MM-DD-<topic>.md` (e.g., `docs/learnings/2025-01-15-expo-sdk-version.md`)
+4. **Ask where to save**: Ask the user whether to save the learning to:
+   - **Project** (`docs/learnings/`): For project-specific learnings that should travel with the codebase
+   - **Personal** (`~/.claude/learnings/`): For learnings that apply across projects (e.g., general patterns, tool usage, framework gotchas)
 
-5. **Write the learning**: Use the format below
+   Suggest personal for broadly applicable learnings (like "how to scaffold Expo projects") and project for context-specific ones (like "this codebase uses custom auth middleware"). Also confirm the filename: `YYYY-MM-DD-<topic>.md`
 
-6. **Update the index**: Add an entry to `docs/learnings/INDEX.md` with an activity-based trigger so Claude consults this learning proactively during planning. Create the index if it doesn't exist (see Index Format below)
+5. **Write the learning**: Use the format below, writing to the chosen location
+
+6. **Update the index**: Add an entry to the appropriate `INDEX.md` (`docs/learnings/INDEX.md` for project, `~/.claude/learnings/INDEX.md` for personal) with an activity-based trigger so Claude consults this learning proactively during planning. Create the index if it doesn't exist (see Index Format below)
 
 ## Learning Format
 
@@ -43,7 +47,7 @@ Frame the learning as "if we were starting over, here's the right approach"—le
 
 ## Example
 
-File: `docs/learnings/2025-01-10-expo-project-setup.md`
+File: `~/.claude/learnings/2025-01-10-expo-project-setup.md` (personal) or `docs/learnings/2025-01-10-expo-project-setup.md` (project)
 
 ```markdown
 # Use create-expo-app for new Expo projects
@@ -69,7 +73,24 @@ Expo has tight coupling between SDK version, babel preset, asset requirements, a
 
 ## Index Format
 
-The index (`docs/learnings/INDEX.md`) maps activities to learning docs so Claude can proactively consult them during planning—before making mistakes. Include this file in your `CLAUDE.md` or project instructions.
+The index maps activities to learning docs so Claude can proactively consult them during planning—before making mistakes.
+
+- **Personal learnings** (`~/.claude/learnings/INDEX.md`): Ensure `~/.claude/CLAUDE.md` references this index so Claude checks it before starting any task
+- **Project learnings** (`docs/learnings/INDEX.md`): Reference this in the project's `CLAUDE.md`
+
+### Example ~/.claude/CLAUDE.md
+
+For personal learnings to work, the user's `~/.claude/CLAUDE.md` should include:
+
+```markdown
+# Personal Claude Instructions
+
+## Learnings
+
+Before starting any task, consult `~/.claude/learnings/INDEX.md` to check for relevant learnings that apply to the work at hand. These capture lessons from past sessions to avoid repeating mistakes.
+
+Read the full learning file when a "Consult when" trigger matches what you're about to do.
+```
 
 ```markdown
 # Learnings Index
