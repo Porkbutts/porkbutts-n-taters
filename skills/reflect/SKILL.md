@@ -75,22 +75,8 @@ Expo has tight coupling between SDK version, babel preset, asset requirements, a
 
 The index maps activities to learning docs so Claude can proactively consult them during planning—before making mistakes.
 
-- **Personal learnings** (`~/.claude/learnings/INDEX.md`): Ensure `~/.claude/CLAUDE.md` references this index so Claude checks it before starting any task
-- **Project learnings** (`docs/learnings/INDEX.md`): Reference this in the project's `CLAUDE.md`
-
-### Example ~/.claude/CLAUDE.md
-
-For personal learnings to work, the user's `~/.claude/CLAUDE.md` should include:
-
-```markdown
-# Personal Claude Instructions
-
-## Learnings
-
-Before starting any task, consult `~/.claude/learnings/INDEX.md` to check for relevant learnings that apply to the work at hand. These capture lessons from past sessions to avoid repeating mistakes.
-
-Read the full learning file when a "Consult when" trigger matches what you're about to do.
-```
+- **Personal learnings**: `~/.claude/learnings/INDEX.md`
+- **Project learnings**: `docs/learnings/INDEX.md`
 
 ```markdown
 # Learnings Index
