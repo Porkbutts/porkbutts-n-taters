@@ -45,6 +45,16 @@ Personal workflow for getting better results out of vibecoding.
 - Choose where to save: project (`docs/learnings/`) for context-specific learnings, or personal (`~/.claude/learnings/`) for broadly applicable ones
 - Maintains an index mapping activities to learning docs—reference in your `CLAUDE.md` for proactive use during planning
 
+To use personal learnings across all projects, add this to `~/.claude/CLAUDE.md`:
+
+```markdown
+## Learnings
+
+Before starting any task, consult `~/.claude/learnings/INDEX.md` to check for relevant learnings that apply to the work at hand. These capture lessons from past sessions to avoid repeating mistakes.
+
+Read the full learning file when a "Consult when" trigger matches what you're about to do.
+```
+
 **functional-prototype** - Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data.
 
 - Triggers when you provide a PRD, spec, or feature description and want a clickable prototype
