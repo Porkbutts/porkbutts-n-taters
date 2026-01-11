@@ -5,7 +5,7 @@ description: Capture learnings from conversation after Claude made mistakes or n
 
 # Reflect
 
-Analyze the current conversation to extract learnings from mistakes or corrections, then persist them for future sessions.
+Analyze the current conversation to extract learnings from mistakes or corrections, then persist them as "if we were starting over" guidance for future sessions.
 
 ## Workflow
 
@@ -13,94 +13,104 @@ Analyze the current conversation to extract learnings from mistakes or correctio
 
 2. **Trace the resolution**: Follow the back-and-forth to understand how the issue was resolved - what did the user clarify? What fix worked?
 
-3. **Synthesize the learning**: Extract the actionable insight - not just "what happened" but "what should future Claude do differently"
+3. **Synthesize the learning**: Extract the actionable insight - frame it as "if we were starting over, here's the right approach" not "here's how we fixed a mistake"
 
 4. **Ask where to save**: Confirm the file path with the user. Suggest `docs/learnings/YYYY-MM-DD-<topic>.md` (e.g., `docs/learnings/2025-01-15-expo-sdk-version.md`)
 
 5. **Write the learning**: Use the format below
 
-6. **Update the index**: Add an entry to `docs/learnings/INDEX.md` mapping the problem type to the learning doc. Create the index if it doesn't exist (see Index Format below)
+6. **Update the index**: Add an entry to `docs/learnings/INDEX.md` with an activity-based trigger so Claude consults this learning proactively during planning. Create the index if it doesn't exist (see Index Format below)
 
 ## Learning Format
 
+Frame the learning as "if we were starting over, here's the right approach"—lead with what to do, not what went wrong.
+
 ```markdown
-# <Clear, actionable title>
+# <Clear, actionable title - state the right approach>
 
-## Context
-<What was being attempted - 1-2 sentences>
+## Consult when
+<Activity-based trigger - what task should prompt reading this?>
 
-## Problem
-<What went wrong and why - be specific>
+## The right approach
+<What to do from the start. Be specific: commands, patterns, tools. Write this as if advising someone who hasn't started yet.>
 
-## Resolution
-<How it was fixed - include code/commands if relevant>
+## What to avoid
+<The anti-pattern that leads to problems. Name it explicitly so it's recognizable.>
 
-## Guidance
-<Actionable advice for future sessions - the key takeaway>
+## Why this matters
+<Brief explanation of what goes wrong with the anti-pattern. Keep it short—just enough context to understand why the right approach is right.>
 ```
 
 ## Example
 
-File: `docs/learnings/2025-01-15-expo-sdk-version.md`
+File: `docs/learnings/2025-01-10-expo-project-setup.md`
 
 ```markdown
-# Use Expo SDK 50+ for new React Native projects
+# Use create-expo-app for new Expo projects
 
-## Context
-Creating a new React Native app using Expo with the default template.
+## Consult when
+Creating a new Expo project, initializing a React Native app with Expo, or setting up project configuration.
 
-## Problem
-The app failed to load in Expo Go with SDK version compatibility errors. The default template used an older SDK version that wasn't supported by the current Expo Go app.
+## The right approach
+Use `npx create-expo-app` to scaffold new projects. This automatically handles:
+- SDK version alignment with Expo Go
+- Babel preset configuration
+- Required asset files (icons, splash screens)
+- Compatible dependency versions
 
-## Resolution
-Updated `app.json` to specify SDK 50, ran `expo upgrade`, and reinstalled dependencies.
+Don't manually assemble the project structure—let the scaffolding tool do it.
 
-## Guidance
-When creating new Expo projects, always verify the SDK version in `app.json` is 50 or higher. Run `expo upgrade` if starting from an older template.
+## What to avoid
+Manually writing package.json and app.json for Expo projects. The interdependencies are too complex to get right by hand.
+
+## Why this matters
+Expo has tight coupling between SDK version, babel preset, asset requirements, and package versions. Manual setup with the wrong SDK version (e.g., SDK 51 when Expo Go runs SDK 54) cascades into version mismatches, missing babel config, and asset errors that require painful debugging to untangle.
 ```
 
 ## Index Format
 
-The index (`docs/learnings/INDEX.md`) maps problem types to learning docs so Claude can quickly find relevant guidance. Include this file in your `CLAUDE.md` or project instructions.
+The index (`docs/learnings/INDEX.md`) maps activities to learning docs so Claude can proactively consult them during planning—before making mistakes. Include this file in your `CLAUDE.md` or project instructions.
 
 ```markdown
 # Learnings Index
 
-Quick reference for common issues and their solutions.
+Consult these learnings **during planning** before starting work. Don't wait until something breaks.
 
 ## How to use this index
-When you encounter a problem, scan the categories below to find relevant learnings.
+Before starting a task, scan the categories below for relevant learnings. Read them first to avoid known pitfalls.
 
 ---
 
 ## React Native / Expo
-| Problem | Learning |
-|---------|----------|
-| SDK version compatibility errors in Expo Go | [2025-01-15-expo-sdk-version.md](./2025-01-15-expo-sdk-version.md) |
+| Consult when | Learning |
+|--------------|----------|
+| Creating a new Expo project | [2025-01-10-expo-project-setup.md](./2025-01-10-expo-project-setup.md) |
 
 ## API / Backend
-| Problem | Learning |
-|---------|----------|
-| (empty) | |
+| Consult when | Learning |
+|--------------|----------|
+| (no learnings yet) | |
 
 ## Testing
-| Problem | Learning |
-|---------|----------|
-| (empty) | |
+| Consult when | Learning |
+|--------------|----------|
+| (no learnings yet) | |
 
 ## Other
-| Problem | Learning |
-|---------|----------|
-| (empty) | |
+| Consult when | Learning |
+|--------------|----------|
+| (no learnings yet) | |
 ```
 
 When adding a new learning, find (or create) the appropriate category and add a row with:
-- **Problem**: A brief description of when to consult this learning (e.g., "SDK version compatibility errors")
+- **Consult when**: An activity-based trigger describing when to read this (e.g., "Creating or upgrading an Expo project", "Setting up JWT authentication", "Writing database migrations")
 - **Learning**: Relative link to the dated learning file
 
 ## Tips for Good Learnings
 
-- **Be specific**: "Use SDK 50+" is better than "use a recent SDK"
-- **Include the why**: Explain *why* the problem occurred, not just what happened
-- **Make it actionable**: The guidance should be something Claude can act on
-- **One learning per file**: Keep each learning focused on a single issue
+- **Lead with the right approach**: The learning should read like advice for someone starting fresh, not a debugging post-mortem
+- **Be specific**: "Use `npx create-expo-app`" is better than "use the official scaffolding tool"
+- **Name the anti-pattern explicitly**: Future Claude needs to recognize when it's about to do the wrong thing. "Manually writing package.json" is specific enough to catch
+- **Keep "why this matters" brief**: Just enough context to understand why the right approach is right. The goal isn't to document the debugging journey—it's to prevent it
+- **One learning per file**: Keep each learning focused on a single insight
+- **Write activity-based triggers**: Frame "Consult when" around what Claude is about to *do*, not what error it might *see*. "Creating an Expo project" matches during planning; "SDK compatibility errors" only matches after failure
