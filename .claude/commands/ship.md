@@ -6,11 +6,16 @@ Create a PR for current changes with version bump and README update.
 
 1. **Check for changes**: Run `git status` and `git diff` to understand what changed
 2. **Update README.md**: If any skill content changed, update the corresponding skill description in README
-3. **Bump version**: Increment version in `.claude-plugin/plugin.json` (patch for fixes, minor for features)
-4. **Create branch**: `git checkout -b <descriptive-branch-name>`
-5. **Commit**: Stage and commit with a clear message summarizing the changes
-6. **Push**: `git push -u origin <branch-name>`
-7. **Create PR**: Use `gh pr create` with summary and test plan
+3. **Determine version bump**: Ask user if this is a patch (fixes), minor (features), or major (breaking changes)
+4. **Bump versions**: Increment version in BOTH files (keep them in sync):
+   - `.claude-plugin/plugin.json`
+   - `.claude-plugin/marketplace.json`
+5. **Create branch**: `git checkout -b <descriptive-branch-name>`
+6. **Commit**: Stage and commit with a clear message summarizing the changes
+7. **Push**: `git push -u origin <branch-name>`
+8. **Create PR**: Use `gh pr create` with summary and test plan
+
+Note: A GitHub release will be automatically created when the PR is merged.
 
 ## Arguments
 
