@@ -42,7 +42,8 @@ Personal workflow for getting better results out of vibecoding.
 
 - Trigger with "reflect", "review our mistakes", "learn from this", or similar phrases after a back-and-forth where you course-corrected Claude
 - Output: Dated markdown file (e.g., `2025-01-15-expo-sdk-version.md`) with the right approach, what to avoid, and why it matters
-- Maintains an index (`docs/learnings/INDEX.md`) mapping activities to learning docs—include this in your `CLAUDE.md` for proactive use during planning
+- Choose where to save: project (`docs/learnings/`) for context-specific learnings, or personal (`~/.claude/learnings/`) for broadly applicable ones
+- Maintains an index mapping activities to learning docs—reference in your `CLAUDE.md` for proactive use during planning
 
 **functional-prototype** - Build functional prototypes from PRDs or specifications. Creates working UI screens with stubbed dependencies (database, APIs) and precanned mock data.
 
