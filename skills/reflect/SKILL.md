@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: Capture lessons from conversation after Claude made mistakes or needed correction. Trigger phrases include "reflect", "review our mistakes", "review what went wrong", "learn from this", "capture this lesson", "remember this for next time", or any request to analyze and persist corrections from the current conversation. Analyzes the conversation to extract what went wrong, how it was resolved, and actionable guidance for future sessions. Writes lessons to ~/.claude/lessons/ and updates ~/.claude/CLAUDE.md with triggers.
+description: Capture lessons from conversation after Claude made mistakes or needed correction. Trigger phrases include "reflect", "review our mistakes", "learn from this", "capture this lesson", "remember this for next time". Analyzes the conversation to extract actionable guidance and persists it to ~/.claude/lessons/ with triggers in ~/.claude/CLAUDE.md.
 ---
 
 # Reflect
@@ -13,53 +13,24 @@ Analyze the current conversation to extract lessons from mistakes or corrections
 
 2. **Trace the resolution**: Follow the back-and-forth to understand how the issue was resolved - what did the user clarify? What fix worked?
 
-3. **Synthesize the lesson**: Extract the actionable insight - frame it as "if we were starting over, here's the right approach" not "here's how we fixed a mistake"
+3. **Draft the lesson**: Extract what you think the actionable insight is - frame it as "if we were starting over, here's the right approach"
 
-4. **Confirm the filename**: Suggest `YYYY-MM-DD-<topic>.md` and confirm with the user
+4. **Validate with user**: Present your draft lesson and ask the user to confirm or correct it. This is critical because:
+   - You may have misidentified the root cause (correlation vs causation)
+   - Some "fixes" may have been red herrings that happened to work alongside the real fix
+   - The user knows which insight is actually valuable to persist
 
-5. **Write the lesson**: Save to `~/.claude/lessons/` using the format below
+   Ask something like: "Here's the lesson I extracted - is this the right takeaway, or did I miss the actual root cause?"
 
-6. **Update CLAUDE.md**: Add an entry to the Lessons table in `~/.claude/CLAUDE.md` with an activity-based trigger so Claude consults this lesson proactively during planning. Create the table if it doesn't exist (see CLAUDE.md Format below)
+5. **Write and register**: Once validated:
+   - Suggest filename `YYYY-MM-DD-<topic>.md` and confirm with user
+   - Save to `~/.claude/lessons/` using the format in [lesson-template.md](references/lesson-template.md)
+   - Add entry to Lessons table in `~/.claude/CLAUDE.md` (create table if needed - see format below)
 
-## Lesson Format
+## Edge Cases
 
-Frame the lesson as "if we were starting over, here's the right approach"—lead with what to do, not what went wrong.
-
-```markdown
-# <Clear, actionable title - state the right approach>
-
-## Consult when
-<Activity-based trigger - what task should prompt reading this?>
-
-## The right approach
-<What to do from the start. Be specific: commands, patterns, tools. Write this as if advising someone who hasn't started yet.>
-
-## What to avoid (and why)
-<The anti-pattern that leads to problems, plus brief explanation of what goes wrong. Name the anti-pattern explicitly so it's recognizable.>
-```
-
-## Example
-
-File: `~/.claude/lessons/2025-01-10-expo-project-setup.md`
-
-```markdown
-# Use create-expo-app for new Expo projects
-
-## Consult when
-Creating a new Expo project, initializing a React Native app with Expo, or setting up project configuration.
-
-## The right approach
-Use `npx create-expo-app` to scaffold new projects. This automatically handles:
-- SDK version alignment with Expo Go
-- Babel preset configuration
-- Required asset files (icons, splash screens)
-- Compatible dependency versions
-
-Don't manually assemble the project structure—let the scaffolding tool do it.
-
-## What to avoid (and why)
-Manually writing package.json and app.json for Expo projects. Expo has tight coupling between SDK version, babel preset, asset requirements, and package versions. Manual setup with the wrong SDK version (e.g., SDK 51 when Expo Go runs SDK 54) cascades into version mismatches, missing babel config, and asset errors that require painful debugging to untangle.
-```
+- **No clear mistake**: If the user wants to capture a learning that wasn't from a mistake (e.g., "remember this approach"), still use the same format but frame "What to avoid" as the less-optimal alternative
+- **Multiple lessons**: If multiple unrelated lessons emerge from one conversation, write them as separate files and validate each one individually with the user
 
 ## CLAUDE.md Format
 
