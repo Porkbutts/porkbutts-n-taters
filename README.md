@@ -12,21 +12,21 @@ An opinionated collection of skills to add structured workflows to vibecoding.
 
 ```bash
 /plugin marketplace add Porkbutts/porkbutts-n-taters
-/plugin install effective-design@porkbutts-n-taters
+/plugin install vibe-coding@porkbutts-n-taters
 ```
 
 ### For Local Development
 
 ```bash
 /plugin marketplace add /path/to/this/repo
-/plugin install effective-design@porkbutts-n-taters
+/plugin install vibe-coding@porkbutts-n-taters
 ```
 
 Then restart Claude Code.
 
 ## Plugins
 
-### effective-design
+### vibe-coding
 
 Personal workflow for getting better results out of vibecoding.
 
