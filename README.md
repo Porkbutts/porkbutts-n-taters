@@ -45,6 +45,12 @@ Personal workflow for getting better results out of vibecoding.
 - Output: Dated markdown file in `~/.claude/lessons/` (e.g., `2025-01-15-expo-sdk-version.md`) with the right approach and what to avoid
 - Automatically updates `~/.claude/CLAUDE.md` with a lessons table for proactive consultation during planning
 
+**architecture** - Design technical architecture from a PRD. Transform product requirements into implementation-ready technical specs.
+
+- Use when you want to create an architecture document, define system design, or plan technical implementation
+- Reads from `docs/PRD.md` and outputs `docs/ARCHITECTURE.md`
+- Includes: tech stack decisions with rationale, directory structure, key abstractions, data flow, and anti-patterns to avoid
+
 **functional-prototype** - Build working prototypes from PRDs with mock data and stubbed integrations to validate flows before full implementation.
 
 - Triggers: "build a prototype", "functional prototype", "make a demo", "implement this PRD", "prototype this spec"

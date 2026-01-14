@@ -158,6 +158,13 @@ After the interview, produce this document:
 - [Any unresolved items that need answers before/during implementation]
 ```
 
+### Before Generating
+
+Before writing the PRD, confirm with the user:
+- Summarize what you've learned from the interview
+- Ask if they're ready to generate the PRD or if anything needs clarification
+- Write the PRD to `docs/PRD.md` (create the directory if needed)
+
 ## Workflow Summary
 
 ```
@@ -185,7 +192,12 @@ START
            │
            ▼
 ┌─────────────────────────┐
-│ Generate PRD            │
+│ Confirm with user       │ ◄── Ask if ready to generate PRD
+└──────────┬──────────────┘
+           │
+           ▼
+┌─────────────────────────┐
+│ Generate PRD            │ ◄── Write to docs/PRD.md
 └─────────────────────────┘
 ```
 
