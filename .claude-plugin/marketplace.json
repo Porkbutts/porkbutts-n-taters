@@ -6,9 +6,9 @@
   },
   "plugins": [
     {
-      "name": "effective-design",
+      "name": "vibe-coding",
       "description": "Personal workflow for getting better results out of vibecoding",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "source": "./",
       "author": {
         "name": "Porkbutts"
