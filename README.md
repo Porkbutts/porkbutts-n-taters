@@ -55,3 +55,25 @@ Personal workflow for getting better results out of vibecoding.
 
 - Triggers: "build a prototype", "functional prototype", "make a demo", "implement this PRD", "prototype this spec"
 - Output: Working clickable prototype; optionally generates `docs/integration-guide.md` (asks first) documenting how to replace stubs with real integrations
+
+**task-decomposition** - Break down PRD and Architecture into implementable engineering tasks.
+
+- Use when you want to create a task list, plan implementation work, or decompose features into stories and tasks
+- Reads from `docs/PRD.md` and `docs/ARCHITECTURE.md`, outputs `docs/TASKS.md`
+- Structure: Epics → User Stories → Atomic Tasks with acceptance criteria and test approaches
+
+**orchestrate** - End-to-end project orchestration from idea to implementation.
+
+- Triggers: "build this app", "implement an MVP", or when you want full project automation
+- Coordinates: product-design → architecture → task-decomposition skills
+- Delegates to: task-spec-generator, task-implementer, and code-reviewer agents
+- Resumable: introspects filesystem and git state to pick up where it left off if interrupted
+- Handles parallel task execution where dependencies allow
+
+#### Agents
+
+**task-implementer** - Implement tasks using TDD workflow. Creates git worktree, writes tests first, implements feature, commits. Reads task specs from `docs/tasks/task-<id>.md` and handles review feedback loops.
+
+**code-reviewer** - Review code changes against task specifications. Changes to worktree directory, performs diff, evaluates against requirements, and either approves or writes feedback to task-spec for implementer to address.
+
+**task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.
