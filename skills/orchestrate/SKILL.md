@@ -52,7 +52,7 @@ grep -E '^\s*- \[(x| |🚧)\]' docs/TASKS.md
 | No `docs/tasks/*.md` | Start Phase 2 |
 | Task marked `🚧` in TASKS.md | Resume that task (check worktree exists) |
 | Worktree exists but task not marked | Mark as `🚧`, resume implementation |
-| Task `[x]` but branch still exists | Just needs merge (step 5) |
+| Task `[x]` but branch still exists | Just needs merge/cleanup (step 7) |
 | Branch exists, worktree missing | Recreate worktree, resume |
 | All tasks `[x]`, no task branches | Complete—nothing to do |
 
@@ -76,46 +76,27 @@ Detected state:
 ## Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PHASE 0: RESUME DETECTION                    │
-├─────────────────────────────────────────────────────────────────┤
-│  Introspect files, worktrees, branches → determine resume point │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PHASE 1: PLANNING                            │
-├─────────────────────────────────────────────────────────────────┤
-│  PRD → Architecture → Tasks (invoke skills as needed)          │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PHASE 2: TASK SPEC GENERATION                │
-├─────────────────────────────────────────────────────────────────┤
-│  Launch task-spec-generator agent → docs/tasks/task-<id>.md     │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PHASE 3: IMPLEMENTATION LOOP                 │
-├─────────────────────────────────────────────────────────────────┤
-│  For each story (in order):                                     │
-│    For each task (respecting dependencies):                     │
-│      1. Launch task-implementer agent                           │
-│      2. Launch code-reviewer agent                              │
-│      3. If changes requested → re-run task-implementer          │
-│      4. Repeat until approved                                   │
-│      5. Merge feature branch to main                            │
-│      6. Update progress in TASKS.md                             │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PHASE 4: STORY COMPLETION                    │
-├─────────────────────────────────────────────────────────────────┤
-│  Verify all acceptance criteria met, update TASKS.md            │
-└─────────────────────────────────────────────────────────────────┘
+Phase 0: Resume Detection
+  → Introspect files, worktrees, branches to find resume point
+
+Phase 1: Planning
+  → PRD → Architecture → Tasks (invoke skills as needed)
+
+Phase 2: Task Spec Generation
+  → Launch task-spec-generator → creates docs/tasks/task-<id>.md
+
+Phase 3: Implementation Loop
+  For each task (in dependency order):
+    1. Mark 🚧 in TASKS.md
+    2. Launch task-implementer
+    3. Launch code-reviewer
+    4. If REQUEST CHANGES → loop back to step 2
+    5. Verify build/tests pass
+    6. Mark [x] in TASKS.md
+    7. Merge to main, cleanup worktree, push
+
+Phase 4: Completion
+  → All tasks done, optionally tag release
 ```
 
 ## Phase 2: Task Spec Generation
@@ -131,34 +112,48 @@ This creates `docs/tasks/task-<id>.md` for each task (e.g., `task-1.1.1.md`, `ta
 
 ## Phase 3: Implementation Loop
 
-Process epics and stories in the order specified in `docs/TASKS.md` "Implementation Order" section.
+Process tasks in the order specified in `docs/TASKS.md`.
 
 ### For each task:
 
-1. **Launch task-implementer agent:**
+1. **Mark in-progress:** Change `[ ]` to `🚧` in `docs/TASKS.md`
+
+2. **Launch task-implementer:**
    ```
-   Task agent: task-implementer
+   Agent: task-implementer
    Prompt: "Implement task <id> per docs/tasks/task-<id>.md"
    ```
 
-2. **Launch code-reviewer agent:**
+3. **Launch code-reviewer:**
    ```
-   Task agent: code-reviewer
-   Prompt: "Review task/<id> in worktree .worktrees/task-<id> against docs/tasks/task-<id>.md"
+   Agent: code-reviewer
+   Prompt: "Review task <id> against docs/tasks/task-<id>.md"
    ```
 
-3. **Handle review outcome:**
-   - **APPROVED**: Proceed to step 4
-   - **REQUEST CHANGES**: Re-launch task-implementer (it reads feedback from task-spec)
+4. **Handle review outcome:**
+   - **APPROVED**: Proceed to step 5
+   - **REQUEST CHANGES**: Loop back to step 2 (implementer reads feedback from task-spec)
 
-4. **Update progress:** Mark task `[x]` in `docs/TASKS.md` (signals "approved, ready to merge")
+5. **Verify build/tests:**
+   ```bash
+   cd .worktrees/task-<id>
+   # Run project's build & test commands (detect from package.json, Makefile, etc.)
+   # Must pass - if not, loop to step 2
+   ```
 
-5. **Merge to main:** (use `--no-ff` to preserve branch history)
+6. **Mark complete:** Change `🚧` to `[x]` in `docs/TASKS.md`
+
+7. **Merge and cleanup:**
    ```bash
    git checkout main
-   git merge task/<id> --no-ff -m "Merge task/<id>: [title]"
-   git worktree remove .worktrees/task-<id>
-   git branch -d task/<id>
+   # Check if already merged (idempotence)
+   if ! git branch --merged main | grep -q "task/<id>"; then
+     git merge task/<id> --no-ff -m "Merge task/<id>: [title]"
+   fi
+   # Cleanup (idempotent - check existence first)
+   git worktree list | grep -q "task-<id>" && git worktree remove .worktrees/task-<id>
+   git branch --list "task/<id>" | grep -q . && git branch -d task/<id>
+   git remote get-url origin && git push  # Push if remote exists
    ```
 
 ### Parallel Execution
@@ -174,23 +169,11 @@ Launch multiple task-implementer agents simultaneously for independent tasks. Ea
 2. Run tests to verify resolution
 3. Complete the merge
 
-## Phase 4: Story Completion
+## Phase 4: Completion
 
-After all tasks in a story complete:
-
-1. Verify all story acceptance criteria are met
-2. Mark the story complete in `docs/TASKS.md`
-3. Proceed to next story
-
-After all stories in an epic complete:
-1. Mark the epic complete in `docs/TASKS.md`
-2. Optionally: create a release/tag
-
-## Progress Tracking
-
-Keep `docs/TASKS.md` updated throughout:
-- `[ ]` → `🚧` when task starts
-- `🚧` → `[x]` when task merges
+When all tasks are merged:
+1. Verify acceptance criteria in PRD are met
+2. Optionally create a release tag
 
 ## Error Handling
 

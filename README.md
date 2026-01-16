@@ -69,11 +69,12 @@ Personal workflow for getting better results out of vibecoding.
 - Delegates to: task-spec-generator, task-implementer, and code-reviewer agents
 - Resumable: introspects filesystem and git state to pick up where it left off if interrupted
 - Handles parallel task execution where dependencies allow
+- Verifies build and tests pass before merging each task to main
 
 #### Agents
 
-**task-implementer** - Implement tasks using TDD workflow. Creates git worktree, writes tests first, implements feature, commits. Reads task specs from `docs/tasks/task-<id>.md` and handles review feedback loops.
+**task-implementer** - Implement tasks using TDD workflow. Creates git worktree, verifies build and tests pass (baseline check), then writes tests first, implements feature, and commits. Reads task specs from `docs/tasks/task-<id>.md` and handles review feedback loops.
 
-**code-reviewer** - Review code changes against task specifications. Changes to worktree directory, performs diff, evaluates against requirements, and either approves or writes feedback to task-spec for implementer to address.
+**code-reviewer** - Review code changes against task specifications. Changes to worktree directory, verifies build and tests pass (baseline check), then performs diff, evaluates against requirements, and either approves or writes feedback to task-spec for implementer to address.
 
 **task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.
