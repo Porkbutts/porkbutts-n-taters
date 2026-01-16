@@ -1,7 +1,6 @@
 ---
 name: code-reviewer
 description: "Use this agent when the user wants to review code changes on a feature branch against master, validate implementation against requirements in task-<id>.md, and get approval or change suggestions. This includes after completing a feature, before merging a PR, or when explicitly asked to review code changes.\\n\\n<example>\\nContext: User has finished implementing a feature and wants it reviewed before merging.\\nuser: \"I've finished the authentication feature, can you review it?\"\\nassistant: \"I'll use the code-reviewer agent to review your authentication feature against the task requirements.\"\\n<Task tool invocation to launch code-reviewer agent>\\n</example>\\n\\n<example>\\nContext: User wants to check if their feature branch is ready for merge.\\nuser: \"Is my feature branch ready to merge into master?\"\\nassistant: \"Let me use the code-reviewer agent to compare your feature branch against master and validate it meets the task-<id>.md requirements.\"\\n<Task tool invocation to launch code-reviewer agent>\\n</example>\\n\\n<example>\\nContext: User asks for a PR review.\\nuser: \"Can you do a code review on my PR?\"\\nassistant: \"I'll launch the code-reviewer agent to analyze your changes against the task specification and provide feedback.\"\\n<Task tool invocation to launch code-reviewer agent>\\n</example>"
-tools: Glob, Grep, Read, WebFetch, TodoWrite, WebSearch, Bash
 model: sonnet
 color: yellow
 ---
