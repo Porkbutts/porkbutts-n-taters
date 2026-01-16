@@ -136,7 +136,8 @@ Process tasks in the order specified in `docs/TASKS.md`.
 5. **Verify and merge:**
    ```bash
    cd .worktrees/task-<id>
-   npm run build && npm test              # Must pass - if not, loop to step 2
+   # Run project's build & test commands (detect from package.json, Makefile, etc.)
+   # Must pass - if not, loop to step 2
    git checkout main
    git merge task/<id> --no-ff -m "Merge task/<id>: [title]"
    git worktree remove .worktrees/task-<id>

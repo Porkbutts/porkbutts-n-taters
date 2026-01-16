@@ -28,13 +28,13 @@ You will implement the task defined in `docs/tasks/task-<id>.md` following a str
 ### Phase 1: Baseline Verification
 Verify the project builds and tests pass before gathering context. This catches fundamental issues early.
 
-1. Build the project: `npm run build`
-2. Run the full test suite: `npm test`
-3. If either fails:
+1. Detect the project's build system (package.json, Makefile, Cargo.toml, etc.)
+2. Run the build command (e.g., `npm run build`, `make`, `cargo build`)
+3. Run the test command (e.g., `npm test`, `make test`, `cargo test`)
+4. If either fails:
    - Analyze the failures carefully
    - Fix the IMPLEMENTATION code (never the tests)
    - Re-run build and tests until all pass
-4. Document any issues found and fixed
 5. Only proceed when you have a green baseline
 
 ### Phase 2: Context Gathering

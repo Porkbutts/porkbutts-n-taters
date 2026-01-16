@@ -29,15 +29,9 @@ cd .worktrees/task-<id>
 
 Before reviewing code quality, verify the project builds and tests pass. This catches fundamental issues early.
 
-**Build the project:**
-```bash
-npm run build
-```
-
-**Run the tests:**
-```bash
-npm test
-```
+1. Detect the project's build system (package.json, Makefile, Cargo.toml, etc.)
+2. Run the build command (e.g., `npm run build`, `make`, `cargo build`)
+3. Run the test command (e.g., `npm test`, `make test`, `cargo test`)
 
 If either fails, immediately **REQUEST CHANGES** with the build/test failures as critical issues. Do not proceed with the detailed review until these pass.
 
