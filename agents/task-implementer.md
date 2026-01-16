@@ -20,10 +20,14 @@ You will implement the task defined in `docs/tasks/task-<id>.md` following a str
 
 ### Phase 0: Environment Setup
 1. Check if a git worktree already exists for this task under `.worktrees/task-<id>`:
-   - If it exists (e.g., when addressing review feedback), change into that directory
+   - If it exists, change into that directory
    - If not, create one: `git worktree add .worktrees/task-<id> -b task/<id>`
-   - Change into the worktree directory for all subsequent work
-2. Confirm you are on the correct feature branch with `git branch --show-current`
+2. **Reset uncommitted changes** (handles interrupted runs):
+   ```bash
+   git checkout . && git clean -fd
+   ```
+   This discards partial work from killed runs. Committed work (e.g., from previous review cycle) is preserved.
+3. Confirm you are on the correct feature branch with `git branch --show-current`
 
 ### Phase 1: Baseline Verification
 Verify the project builds and tests pass before gathering context. This catches fundamental issues early.

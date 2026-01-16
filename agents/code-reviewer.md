@@ -93,7 +93,7 @@ Output:
 
 ### Step 7: Write Feedback (If Requesting Changes)
 
-Append to `docs/tasks/task-<id>.md`:
+First, **remove any existing `## Review Feedback` section** from the task-spec (handles interrupted runs or re-reviews). Then append fresh feedback to `docs/tasks/task-<id>.md`:
 
 ```markdown
 ## Review Feedback (requires changes)
