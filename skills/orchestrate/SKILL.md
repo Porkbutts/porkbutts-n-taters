@@ -121,40 +121,13 @@ Process tasks in the order specified in `docs/TASKS.md`.
 2. **Launch task-implementer:**
    ```
    Agent: task-implementer
-   Prompt: "Implement task <id> per docs/tasks/task-<id>.md"
+   Prompt: "Implement docs/tasks/task-<id>.md"
    ```
 
-3. **Launch code-reviewer:**
-   ```
-   Agent: code-reviewer
-   Prompt: "Review task <id> against docs/tasks/task-<id>.md"
-   ```
+3. **Mark complete:** Change `🚧` to `[x]` in `docs/TASKS.md`
 
-4. **Handle review outcome:**
-   - **APPROVED**: Proceed to step 5
-   - **REQUEST CHANGES**: Loop back to step 2 (implementer reads feedback from task-spec)
-
-5. **Verify build/tests:**
-   ```bash
-   cd .worktrees/task-<id>
-   # Run project's build & test commands (detect from package.json, Makefile, etc.)
-   # Must pass - if not, loop to step 2
-   ```
-
-6. **Mark complete:** Change `🚧` to `[x]` in `docs/TASKS.md`
-
-7. **Merge and cleanup:**
-   ```bash
-   git checkout main
-   # Check if already merged (idempotence)
-   if ! git branch --merged main | grep -q "task/<id>"; then
-     git merge task/<id> --no-ff -m "Merge task/<id>: [title]"
-   fi
-   # Cleanup (idempotent - check existence first)
-   git worktree list | grep -q "task-<id>" && git worktree remove .worktrees/task-<id>
-   git branch --list "task/<id>" | grep -q . && git branch -d task/<id>
-   git remote get-url origin && git push  # Push if remote exists
-   ```
+4. **Merge and cleanup:**
+    Merge the branch, delete the worktree.
 
 ### Parallel Execution
 

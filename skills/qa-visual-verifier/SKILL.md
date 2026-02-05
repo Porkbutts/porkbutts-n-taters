@@ -1,6 +1,6 @@
 ---
 name: qa-visual-verifier
-description: Visual QA verification skill using Playwright MCP for screenshot-based testing of PRs and user stories. Use when verifying implemented features match task specifications, testing user flows visually, checking for visual bugs, or validating acceptance criteria from docs/TASKS.md. Triggers on "verify this PR", "QA this feature", "visual test", "check the UI", "screenshot test", "verify task X". Supports both localhost dev servers and remote URLs. Pauses for user assistance on authentication flows.
+description: Visual QA verification skill using Playwright MCP for screenshot-based testing of PRs and user stories. Use when verifying implemented features match task specifications, testing user flows visually, checking for visual bugs, or validating acceptance criteria from docs/TASKS.md. Triggers on "verify this PR", "QA this feature", "visual test", "check the UI", "screenshot test", "verify task X". Supports both localhost dev servers and remote URLs. Auto-selects Google accounts; pauses for user assistance only on credential-based login flows.
 ---
 
 # QA Visual Verifier
@@ -11,7 +11,7 @@ Screenshot-first verification of PRs and user stories using Playwright MCP. Visu
 
 1. **Screenshots over DOM inspection** - Take screenshots at every meaningful step to catch visual regressions
 2. **Human-like verification** - Navigate flows as a user would, visually confirming each step
-3. **Graceful auth handling** - Pause and request user assistance when encountering login walls
+3. **Graceful auth handling** - Auto-select Google accounts; only pause for credential-based login
 4. **Flexible targets** - Works against localhost dev servers or remote URLs
 
 ## Workflow
@@ -64,12 +64,29 @@ For each acceptance criterion:
 
 ### 4. Authentication Handling
 
-When encountering a login page or auth wall:
+When encountering an auth screen, use `browser_snapshot` to determine the type:
+
+**Type A: Google Account Selection (handle automatically)**
+
+If the page shows a Google account picker (e.g., "Choose an account", list of Google accounts/emails), simply click the first account and continue. Do NOT ask the user for help.
+
+```
+1. browser_snapshot to confirm it's an account picker
+2. browser_take_screenshot(filename="auth-google-select.png")
+3. browser_click the first account option
+4. browser_wait_for(time=2) for redirect
+5. browser_take_screenshot(filename="auth-google-complete.png")
+6. Continue with verification flow
+```
+
+**Type B: Credential-based Login (defer to user)**
+
+If the page requires entering a username/email and password, pause and ask the user:
 
 ```markdown
 ## Auth Required
 
-I've encountered an authentication screen at [URL].
+I've encountered a credential-based login screen at [URL].
 
 **Screenshot:** auth-required.png
 
@@ -81,11 +98,9 @@ I've encountered an authentication screen at [URL].
 Please respond with your choice or complete the login manually.
 ```
 
-Use `browser_snapshot` to detect auth indicators:
-- Login forms, "Sign in" buttons
-- OAuth redirects (Google, GitHub, etc.)
-- 401/403 error pages
-- "Session expired" messages
+**Detection indicators:**
+- **Auto-handle**: "Choose an account", account avatar list, Google account picker UI
+- **Defer to user**: Login forms with email/password fields, "Enter your password" prompts, 401/403 error pages, "Session expired" messages
 
 ### 5. Screenshot Strategy
 
@@ -175,5 +190,5 @@ See [references/visual-patterns.md](references/visual-patterns.md) for detailed 
    - Screenshot after
    - Visually verify
    - Record result
-6. If auth encountered: pause, notify user, wait
+6. If auth encountered: auto-select Google account, or pause for credential login
 7. Generate report with all screenshots

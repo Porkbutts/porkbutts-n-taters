@@ -143,14 +143,29 @@ Visual checks:
 
 ## Auth Detection
 
-### Identifying Auth Walls
+### Identifying Auth Type
 ```
-browser_snapshot to get page content, look for:
+browser_snapshot to get page content and classify:
+
+Google Account Picker (auto-handle):
+- Text: "Choose an account", "Use another account"
+- Account list with email addresses and avatars
+- URLs: accounts.google.com/AccountChooser, accounts.google.com/o/oauth2
+
+If detected:
+1. browser_take_screenshot(filename="auth-google-select.png")
+2. browser_click the first account in the list
+3. browser_wait_for(time=2) for redirect
+4. browser_take_screenshot(filename="auth-google-complete.png")
+5. Continue verification
+
+Credential-based Login (defer to user):
 - Text: "Sign in", "Log in", "Login", "Sign up"
 - Text: "Create account", "Register"
 - Text: "Session expired", "Please authenticate"
-- Elements: password fields, OAuth buttons
-- URLs: /login, /signin, /auth, /oauth
+- Text: "Enter your password", "Enter your email"
+- Elements: password fields, email+password form
+- URLs: /login, /signin, /auth
 
 If detected:
 1. browser_take_screenshot(filename="auth-required.png")
