@@ -78,3 +78,10 @@ Personal workflow for getting better results out of vibecoding.
 **code-reviewer** - Review code changes against task specifications. Changes to worktree directory, verifies build and tests pass (baseline check), then performs diff, evaluates against requirements, and either approves or writes feedback to task-spec for implementer to address.
 
 **task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.
+
+**qa-visual-verifier** - Visual QA verification using Playwright MCP for screenshot-based testing. Takes screenshots at every step to catch visual regressions, navigates flows as a user would, and pauses for user assistance on authentication walls.
+
+- Triggers: "verify this PR", "QA this feature", "visual test", "check the UI", "screenshot test"
+- Works against localhost dev servers or remote URLs
+- Reads task specs from `docs/tasks/task-<id>.md` for acceptance criteria
+- Output: Markdown report with embedded screenshot references showing pass/fail status
