@@ -62,7 +62,7 @@ Personal workflow for getting better results out of vibecoding.
 - Reads from `docs/PRD.md` and `docs/ARCHITECTURE.md`, outputs `docs/TASKS.md`
 - Structure: Epics → User Stories → Atomic Tasks with acceptance criteria and test approaches
 
-**project-bootstrap** - Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices.
+**bootstrap-project** - Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices.
 
 - Triggers: "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "project setup"
 - Ensures GitHub CI workflow exists for lint, typecheck, test with coverage, and build

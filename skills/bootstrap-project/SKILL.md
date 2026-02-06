@@ -1,5 +1,5 @@
 ---
-name: project-bootstrap
+name: bootstrap-project
 description: Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices. Use when setting up a new project, adding CI pipelines, configuring husky/lint-staged, or applying Vercel best practices. Triggers on "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "setup linting", "add code coverage", "project setup", or when starting a new codebase that needs infrastructure.
 ---
 
