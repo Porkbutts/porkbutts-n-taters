@@ -15,32 +15,35 @@ Before starting, verify which artifacts exist:
 |----------|------|------------|
 | PRD | `docs/PRD.md` | Invoke `/product-design` skill |
 | Architecture | `docs/ARCHITECTURE.md` | Invoke `/architecture` skill |
+| Brand Guidelines | `docs/BRAND-GUIDELINES.md` | Invoke `/frontend-design` skill |
 | Tasks | `docs/TASKS.md` | Invoke `/task-decomposition` skill |
 
-Use a general agent (opus) to invoke each missing skill in order. Proceed automatically—each skill handles its own user confirmation.
+Invoke each missing skill in order. After Phase 1 is complete, clear context before proceeding to Phase 2.
 
 ## Resume Detection
 
-On startup, introspect state to determine where to resume. This makes the skill idempotent—safe to run repeatedly.
+On startup, introspect state to determine where to resume. `docs/TASKS.md` is the sole source of truth for progress. If any partial work exists (worktrees, unmerged task branches), clean it up before proceeding.
 
 ### Check sequence:
 
 ```bash
 # 1. Check planning artifacts
-ls docs/PRD.md docs/ARCHITECTURE.md docs/TASKS.md 2>/dev/null
+ls docs/PRD.md docs/ARCHITECTURE.md docs/BRAND-GUIDELINES.md docs/TASKS.md 2>/dev/null
 
 # 2. Check task specs
 ls docs/tasks/task-*.md 2>/dev/null
 
-# 3. Check for in-progress worktrees
+# 3. Clean up any leftover worktrees and branches from interrupted runs
 git worktree list | grep '.worktrees/task-'
-
-# 4. Check for unmerged task branches
 git branch --list 'task/*'
 
-# 5. Parse TASKS.md for progress markers
-grep -E '^\s*- \[(x| |🚧)\]' docs/TASKS.md
+# 4. Parse TASKS.md for progress
+grep -E '^\s*- \[(x| )\]' docs/TASKS.md
 ```
+
+### Cleanup:
+
+Remove any worktrees and branches from incomplete tasks before resuming. Only tasks marked `[x]` in `docs/TASKS.md` are considered done—everything else starts fresh.
 
 ### Resume logic:
 
@@ -48,29 +51,19 @@ grep -E '^\s*- \[(x| |🚧)\]' docs/TASKS.md
 |-------|--------------|
 | No `docs/PRD.md` | Start Phase 1 |
 | No `docs/ARCHITECTURE.md` | Phase 1: architecture skill |
+| No `docs/BRAND-GUIDELINES.md` | Phase 1: frontend-design skill |
 | No `docs/TASKS.md` | Phase 1: task-decomposition skill |
 | No `docs/tasks/*.md` | Start Phase 2 |
-| Task marked `🚧` in TASKS.md | Resume that task (check worktree exists) |
-| Worktree exists but task not marked | Mark as `🚧`, resume implementation |
-| Task `[x]` but branch still exists | Just needs merge/cleanup (step 7) |
-| Branch exists, worktree missing | Recreate worktree, resume |
-| All tasks `[x]`, no task branches | Complete—nothing to do |
-
-### In-progress task recovery:
-
-If a worktree exists at `.worktrees/task-<id>`:
-1. Check if branch has uncommitted changes → continue implementation
-2. Check if branch has commits ahead of main → needs review or merge
-3. Check task-spec for `## Review Feedback` section → address feedback
+| All tasks `[x]` | Complete—nothing to do |
+| Otherwise | Resume Phase 3 from first unchecked task |
 
 Report detected state to user before proceeding:
 ```
 Detected state:
-- Planning: Complete (PRD, Architecture, Tasks exist)
+- Planning: Complete (PRD, Architecture, Brand Guidelines, Tasks exist)
 - Task specs: 12 generated
 - Progress: 5/12 tasks complete
-- In-progress: task-2.1.3 (worktree exists, has commits)
-- Resuming from: task-2.1.3 code review
+- Resuming from: task-2.1.3
 ```
 
 ## Workflow
@@ -80,20 +73,19 @@ Phase 0: Resume Detection
   → Introspect files, worktrees, branches to find resume point
 
 Phase 1: Planning
-  → PRD → Architecture → Tasks (invoke skills as needed)
+  → PRD → Architecture → Brand Guidelines → Tasks (invoke skills as needed)
 
 Phase 2: Task Spec Generation
   → Launch task-spec-generator → creates docs/tasks/task-<id>.md
 
 Phase 3: Implementation Loop
   For each task (in dependency order):
-    1. Mark 🚧 in TASKS.md
-    2. Launch task-implementer
-    3. Launch code-reviewer
-    4. If REQUEST CHANGES → loop back to step 2
-    5. Verify build/tests pass
+    1. Launch task-implementer
+    2. Launch code-reviewer
+    3. If REQUEST CHANGES → loop back to step 1
+    4. Verify build/tests pass
+    5. Merge to main, cleanup worktree, push
     6. Mark [x] in TASKS.md
-    7. Merge to main, cleanup worktree, push
 
 Phase 4: Completion
   → All tasks done, optionally tag release
@@ -116,18 +108,16 @@ Process tasks in the order specified in `docs/TASKS.md`.
 
 ### For each task:
 
-1. **Mark in-progress:** Change `[ ]` to `🚧` in `docs/TASKS.md`
-
-2. **Launch task-implementer:**
+1. **Launch task-implementer:**
    ```
    Agent: task-implementer
    Prompt: "Implement docs/tasks/task-<id>.md"
    ```
 
-3. **Mark complete:** Change `🚧` to `[x]` in `docs/TASKS.md`
-
-4. **Merge and cleanup:**
+2. **Merge and cleanup:**
     Merge the branch, delete the worktree.
+
+3. **Mark complete:** Change `[ ]` to `[x]` in `docs/TASKS.md`
 
 ### Parallel Execution
 

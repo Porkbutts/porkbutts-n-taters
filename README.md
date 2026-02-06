@@ -62,6 +62,15 @@ Personal workflow for getting better results out of vibecoding.
 - Reads from `docs/PRD.md` and `docs/ARCHITECTURE.md`, outputs `docs/TASKS.md`
 - Structure: Epics → User Stories → Atomic Tasks with acceptance criteria and test approaches
 
+**bootstrap-project** - Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices.
+
+- Triggers: "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "project setup"
+- Ensures GitHub CI workflow exists for lint, typecheck, test with coverage, and build
+- Sets up husky + lint-staged pre-commit hooks for lint, format, and typecheck
+- Installs Vercel best practices via `npx add-skill vercel-labs/agent-skills`
+- Enforces high code coverage thresholds (80%) appropriate for LLM coding agents
+- Detects existing config and only adds what's missing
+
 **orchestrate** - End-to-end project orchestration from idea to implementation.
 
 - Triggers: "build this app", "implement an MVP", or when you want full project automation
