@@ -13,7 +13,9 @@ Test like a human QA — navigate the app, look at the screen, and flag what loo
 
 2. **`browser_snapshot` is for interaction only.** You need snapshot refs to click buttons and fill forms — that's fine. But NEVER use snapshot/DOM data to verify acceptance criteria. A human QA doesn't open DevTools to check if a element exists; they look at the screen.
 
-3. **Flag visual problems even if they aren't in the acceptance criteria.** A human QA notices when a modal is cut off, text overflows its container, buttons overlap, or layout looks broken. You should too. Report these as additional findings separate from acceptance criteria results.
+3. **Flag visual problems even if they aren't in the acceptance criteria.** A human QA notices when a modal is cut off, text overflows its container, buttons overlap, or layout looks broken. You should too. Report these as additional findings separate from acceptance criteria results. **Major visual issues FAIL the PR** — see severity rules below.
+
+5. **Don't rationalize away visual bugs.** If a modal is unreadable, a layout is broken, or UI is unusable, that's a FAIL — even if every acceptance criterion technically passes. Never downgrade a major visual issue to "non-blocking" or "note it for later". If a user would look at the screen and say "this is broken", the PR fails.
 
 4. **Navigate like a user.** Click links, fill forms, wait for pages to load. Don't skip steps or assume state.
 
@@ -26,6 +28,17 @@ Beyond acceptance criteria, flag anything a human would notice:
 - **Broken interactions** — buttons that don't appear clickable, missing hover/focus states, forms that don't respond
 - **Loading/state issues** — spinners that never resolve, flash of unstyled content, empty states where data should be
 - **Visual inconsistencies** — misaligned elements, inconsistent spacing, elements that look out of place
+
+### Visual Issue Severity
+
+Every visual issue must be classified:
+
+| Severity | Meaning | Effect on Verdict |
+|----------|---------|-------------------|
+| **Minor** | Cosmetic nits — slightly off spacing, alignment, minor inconsistencies | Note in report, does NOT affect verdict |
+| **Major** | Unusable UI — content unreadable, overlapping elements that block interaction, broken modals, missing backdrops that make dialogs illegible | **FAIL the PR**, same as a failed acceptance criterion |
+
+**When in doubt, ask: "Would a user be able to complete this task?"** If the answer is no, it's Major.
 
 ## Workflow
 
@@ -49,7 +62,15 @@ Before starting, collect:
 | **Auth required?** | Task spec or inference | Assume no |
 | **Screenshot dir** | User preference | `./qa-screenshots/` |
 
-### 3. Verification Loop
+### 3. Clean Screenshot Directory
+
+Before taking any screenshots, wipe the screenshot directory to remove leftovers from previous runs:
+
+```bash
+rm -rf qa-screenshots/ && mkdir -p qa-screenshots/
+```
+
+### 4. Verification Loop
 
 For each acceptance criterion:
 
@@ -65,7 +86,7 @@ For each acceptance criterion:
 
 At every screenshot, ask yourself: "If I were a human looking at this screen, would anything catch my eye as wrong?" Flag it even if it's unrelated to the current criterion.
 
-### 4. Authentication Handling
+### 5. Authentication Handling
 
 **Google Account Selection — handle automatically:**
 
@@ -97,7 +118,7 @@ I've encountered a login screen at [URL].
 3. **Provide credentials**: Share test credentials to proceed
 ```
 
-### 5. Screenshot Strategy
+### 6. Screenshot Strategy
 
 | When | Filename Pattern | Why |
 |------|------------------|-----|
@@ -110,7 +131,53 @@ I've encountered a login screen at [URL].
 - Use element screenshots for component-level detail
 - PNG format
 
-### 6. Generate Report
+### 7. Post Screenshots & Report to PR
+
+After completing all verifications, if a PR number is known:
+
+**Step A: Commit screenshots to the PR branch.**
+
+```bash
+# Ensure you're on the PR branch
+git checkout <branch>
+
+# Stage screenshots
+git add qa-screenshots/
+
+# Commit
+git commit -m "QA screenshots for PR #<number>"
+
+# Push to remote
+git push
+```
+
+**Step B: Build image URLs and post the report as a PR comment.**
+
+Construct image URLs using the format:
+```
+https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<filename>?raw=true
+```
+
+Get owner/repo from:
+```bash
+gh repo view --json nameWithOwner --jq '.nameWithOwner'
+```
+
+Embed screenshots inline in the report using markdown image syntax:
+```markdown
+**Screenshot:** ![description](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<filename>?raw=true)
+```
+
+Post the report as a PR comment:
+```bash
+gh pr comment <number> --body "<report with embedded images>"
+```
+
+Use a HEREDOC to pass the report body to avoid shell escaping issues.
+
+If no PR number is known, skip posting and just output the report.
+
+### 8. Generate Report
 
 ```markdown
 # QA Report
@@ -124,24 +191,39 @@ I've encountered a login screen at [URL].
 - Passed: X
 - Failed: Y
 - Skipped: Z
-- Visual Issues: N (not in acceptance criteria but worth noting)
+- Visual Issues: N minor, M major
+- **Verdict: PASS / FAIL**
 
 ## Acceptance Criteria Results
 
 ### 1. [Criterion]
 **Status:** PASS / FAIL / SKIP
 **Steps:**
-1. [What you did + screenshot ref]
-2. [What you saw + screenshot ref]
+1. [What you did]
+   ![before](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<before-screenshot>.png?raw=true)
+2. [What you saw]
+   ![after](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<after-screenshot>.png?raw=true)
 **Notes:** [What you verified visually]
 
 ## Additional Visual Issues
 
 ### [Issue description]
-**Screenshot:** [ref]
+![issue](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<issue-screenshot>.png?raw=true)
 **Severity:** Minor / Major
 **Details:** [What looks wrong and where]
 ```
+
+### Verdict Rules
+
+**PASS** when:
+- All acceptance criteria pass
+- No Major visual issues
+
+**FAIL** when ANY of:
+- Any acceptance criterion fails
+- Any Major visual issue found (unusable UI, unreadable content, broken interactions)
+
+A PR with all acceptance criteria passing but a Major visual issue is a **FAIL**. Do not pass it with a note — fail it and explain what needs fixing.
 
 ## Playwright Tools
 

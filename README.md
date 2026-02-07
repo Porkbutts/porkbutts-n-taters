@@ -80,6 +80,7 @@ Personal workflow for getting better results out of vibecoding.
 - Reads task spec and branch diff, verifies acceptance criteria, audits test coverage
 - Checks for correctness, security (OWASP top 10), architectural adherence, and scope creep
 - Output: Structured verdict (APPROVE / REQUEST CHANGES) with evidence per criterion and a Manual QA Checklist
+- Posts review findings as a comment on the PR via `gh pr comment`
 
 **agent-orchestration** - End-to-end project orchestration from idea to implementation.
 
@@ -95,6 +96,6 @@ Personal workflow for getting better results out of vibecoding.
 
 **code-reviewer** - Wraps the review-pr skill. Produces APPROVE/REQUEST CHANGES verdicts and writes feedback to task specs.
 
-**qa-tester** - Wraps the qa-verification skill. Visual QA via Playwright against Vercel preview URLs.
+**qa-tester** - Wraps the qa-verification skill. Visual QA via Playwright against Vercel preview URLs. Commits screenshots to the PR branch and posts a QA report with inline images as a PR comment.
 
 **task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.

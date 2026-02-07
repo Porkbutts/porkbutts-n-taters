@@ -206,3 +206,15 @@ Produce a structured review report:
 - Critical test coverage gaps (acceptance criteria with zero tests)
 
 Always explain the verdict in one sentence after the status.
+
+## Step 7: Post Review to PR
+
+After generating the verdict, post it as a comment on the PR:
+
+```bash
+gh pr comment <number> --body "<review report>"
+```
+
+- Use a HEREDOC to pass the report body to avoid shell escaping issues
+- If the PR number is not known (e.g., reviewing a branch with no open PR), skip this step and just output the report
+- Do NOT use `gh pr review` — use `gh pr comment` so the comment is always visible regardless of verdict
