@@ -49,7 +49,15 @@ Before starting, collect:
 | **Auth required?** | Task spec or inference | Assume no |
 | **Screenshot dir** | User preference | `./qa-screenshots/` |
 
-### 3. Verification Loop
+### 3. Clean Screenshot Directory
+
+Before taking any screenshots, wipe the screenshot directory to remove leftovers from previous runs:
+
+```bash
+rm -rf qa-screenshots/ && mkdir -p qa-screenshots/
+```
+
+### 4. Verification Loop
 
 For each acceptance criterion:
 
@@ -65,7 +73,7 @@ For each acceptance criterion:
 
 At every screenshot, ask yourself: "If I were a human looking at this screen, would anything catch my eye as wrong?" Flag it even if it's unrelated to the current criterion.
 
-### 4. Authentication Handling
+### 5. Authentication Handling
 
 **Google Account Selection — handle automatically:**
 
@@ -97,7 +105,7 @@ I've encountered a login screen at [URL].
 3. **Provide credentials**: Share test credentials to proceed
 ```
 
-### 5. Screenshot Strategy
+### 6. Screenshot Strategy
 
 | When | Filename Pattern | Why |
 |------|------------------|-----|
@@ -110,7 +118,53 @@ I've encountered a login screen at [URL].
 - Use element screenshots for component-level detail
 - PNG format
 
-### 6. Generate Report
+### 7. Post Screenshots & Report to PR
+
+After completing all verifications, if a PR number is known:
+
+**Step A: Commit screenshots to the PR branch.**
+
+```bash
+# Ensure you're on the PR branch
+git checkout <branch>
+
+# Stage screenshots
+git add qa-screenshots/
+
+# Commit
+git commit -m "QA screenshots for PR #<number>"
+
+# Push to remote
+git push
+```
+
+**Step B: Build image URLs and post the report as a PR comment.**
+
+Construct image URLs using the format:
+```
+https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<filename>?raw=true
+```
+
+Get owner/repo from:
+```bash
+gh repo view --json nameWithOwner --jq '.nameWithOwner'
+```
+
+Embed screenshots inline in the report using markdown image syntax:
+```markdown
+**Screenshot:** ![description](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<filename>?raw=true)
+```
+
+Post the report as a PR comment:
+```bash
+gh pr comment <number> --body "<report with embedded images>"
+```
+
+Use a HEREDOC to pass the report body to avoid shell escaping issues.
+
+If no PR number is known, skip posting and just output the report.
+
+### 8. Generate Report
 
 ```markdown
 # QA Report
@@ -131,14 +185,16 @@ I've encountered a login screen at [URL].
 ### 1. [Criterion]
 **Status:** PASS / FAIL / SKIP
 **Steps:**
-1. [What you did + screenshot ref]
-2. [What you saw + screenshot ref]
+1. [What you did]
+   ![before](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<before-screenshot>.png?raw=true)
+2. [What you saw]
+   ![after](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<after-screenshot>.png?raw=true)
 **Notes:** [What you verified visually]
 
 ## Additional Visual Issues
 
 ### [Issue description]
-**Screenshot:** [ref]
+![issue](https://github.com/<owner>/<repo>/blob/<branch>/qa-screenshots/<issue-screenshot>.png?raw=true)
 **Severity:** Minor / Major
 **Details:** [What looks wrong and where]
 ```
