@@ -13,7 +13,9 @@ Test like a human QA — navigate the app, look at the screen, and flag what loo
 
 2. **`browser_snapshot` is for interaction only.** You need snapshot refs to click buttons and fill forms — that's fine. But NEVER use snapshot/DOM data to verify acceptance criteria. A human QA doesn't open DevTools to check if a element exists; they look at the screen.
 
-3. **Flag visual problems even if they aren't in the acceptance criteria.** A human QA notices when a modal is cut off, text overflows its container, buttons overlap, or layout looks broken. You should too. Report these as additional findings separate from acceptance criteria results.
+3. **Flag visual problems even if they aren't in the acceptance criteria.** A human QA notices when a modal is cut off, text overflows its container, buttons overlap, or layout looks broken. You should too. Report these as additional findings separate from acceptance criteria results. **Major visual issues FAIL the PR** — see severity rules below.
+
+5. **Don't rationalize away visual bugs.** If a modal is unreadable, a layout is broken, or UI is unusable, that's a FAIL — even if every acceptance criterion technically passes. Never downgrade a major visual issue to "non-blocking" or "note it for later". If a user would look at the screen and say "this is broken", the PR fails.
 
 4. **Navigate like a user.** Click links, fill forms, wait for pages to load. Don't skip steps or assume state.
 
@@ -26,6 +28,17 @@ Beyond acceptance criteria, flag anything a human would notice:
 - **Broken interactions** — buttons that don't appear clickable, missing hover/focus states, forms that don't respond
 - **Loading/state issues** — spinners that never resolve, flash of unstyled content, empty states where data should be
 - **Visual inconsistencies** — misaligned elements, inconsistent spacing, elements that look out of place
+
+### Visual Issue Severity
+
+Every visual issue must be classified:
+
+| Severity | Meaning | Effect on Verdict |
+|----------|---------|-------------------|
+| **Minor** | Cosmetic nits — slightly off spacing, alignment, minor inconsistencies | Note in report, does NOT affect verdict |
+| **Major** | Unusable UI — content unreadable, overlapping elements that block interaction, broken modals, missing backdrops that make dialogs illegible | **FAIL the PR**, same as a failed acceptance criterion |
+
+**When in doubt, ask: "Would a user be able to complete this task?"** If the answer is no, it's Major.
 
 ## Workflow
 
@@ -178,7 +191,8 @@ If no PR number is known, skip posting and just output the report.
 - Passed: X
 - Failed: Y
 - Skipped: Z
-- Visual Issues: N (not in acceptance criteria but worth noting)
+- Visual Issues: N minor, M major
+- **Verdict: PASS / FAIL**
 
 ## Acceptance Criteria Results
 
@@ -198,6 +212,18 @@ If no PR number is known, skip posting and just output the report.
 **Severity:** Minor / Major
 **Details:** [What looks wrong and where]
 ```
+
+### Verdict Rules
+
+**PASS** when:
+- All acceptance criteria pass
+- No Major visual issues
+
+**FAIL** when ANY of:
+- Any acceptance criterion fails
+- Any Major visual issue found (unusable UI, unreadable content, broken interactions)
+
+A PR with all acceptance criteria passing but a Major visual issue is a **FAIL**. Do not pass it with a note — fail it and explain what needs fixing.
 
 ## Playwright Tools
 
