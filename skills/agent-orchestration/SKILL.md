@@ -80,12 +80,13 @@ Phase 2: Task Spec Generation
 
 Phase 3: Implementation Loop
   For each task (in dependency order):
-    1. Invoke task-implementation skill
-    2. Launch code-reviewer
-    3. If REQUEST CHANGES → loop back to step 1
-    4. Verify build/tests pass
-    5. Merge to main, cleanup worktree, push
-    6. Mark [x] in TASKS.md
+    1. Determine task doc from TASKS.md
+    2. Launch task-implementer agent → creates worktree, tests, implements, opens PR
+    3. Launch code-reviewer agent
+    4. If REQUEST CHANGES → re-launch task-implementer, re-review (up to 3 cycles)
+    5. Launch qa-verifier agent against Vercel preview
+    6. If QA fails → re-launch task-implementer, loop back to step 3
+    7. Merge PR, cleanup worktree and branch
 
 Phase 4: Completion
   → All tasks done, optionally tag release
@@ -103,6 +104,8 @@ Prompt: "Generate task specs from docs/TASKS.md"
 This creates `docs/tasks/task-<id>.md` for each task (e.g., `task-1.1.1.md`, `task-2.3.2.md`).
 
 ## Phase 3: Implementation Loop
+
+**IMPORTANT**: For the implementation loop, use subagents not skills!
 
 ### For each task:
 
