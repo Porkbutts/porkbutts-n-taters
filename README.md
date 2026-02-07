@@ -85,7 +85,7 @@ Personal workflow for getting better results out of vibecoding.
 
 - Triggers: "build this app", "implement an MVP", or when you want full project automation
 - Coordinates: product-design → architecture → task-decomposition skills
-- Delegates to: task-spec-generator, task-implementer, code-reviewer, and qa-verifier agents
+- Delegates to: task-spec-generator, task-implementer, code-reviewer, and qa-tester agents
 - Implementation loop: implement → code review → fix feedback → QA verify → merge
 - Resumable: introspects filesystem and git state to pick up where it left off if interrupted
 
@@ -95,6 +95,6 @@ Personal workflow for getting better results out of vibecoding.
 
 **code-reviewer** - Wraps the review-pr skill. Produces APPROVE/REQUEST CHANGES verdicts and writes feedback to task specs.
 
-**qa-verifier** - Wraps the qa-verification skill. Visual QA via Playwright against Vercel preview URLs.
+**qa-tester** - Wraps the qa-verification skill. Visual QA via Playwright against Vercel preview URLs.
 
 **task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.

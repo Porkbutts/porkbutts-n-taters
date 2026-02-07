@@ -66,11 +66,21 @@ Detected state:
 - Resuming from: task-2.1.3
 ```
 
+### Merge Mode
+
+Before starting Phase 3, ask the user to choose a merge mode:
+
+- **Full auto**: After review and QA pass, automatically merge the PR, clean up the worktree/branch, and continue to the next task.
+- **Manual**: After review and QA pass, stop and wait for the user to merge the PR themselves before continuing to the next task.
+
+Remember the chosen mode for the duration of the run. Default to asking if not previously set (including on resume).
+
 ## Workflow
 
 ```
-Phase 0: Resume Detection
+Phase 0: Resume Detection & Configuration
   → Introspect files, worktrees, branches to find resume point
+  → Ask user for merge mode (full auto / manual)
 
 Phase 1: Planning
   → PRD → Architecture → Brand Guidelines → Tasks (invoke skills as needed)
@@ -84,7 +94,7 @@ Phase 3: Implementation Loop
     2. Launch task-implementer agent → creates worktree, tests, implements, opens PR
     3. Launch code-reviewer agent
     4. If REQUEST CHANGES → re-launch task-implementer, re-review (up to 3 cycles)
-    5. Launch qa-verifier agent against Vercel preview
+    5. Launch qa-tester agent against Vercel preview
     6. If QA fails → re-launch task-implementer, loop back to step 3
     7. Merge PR, cleanup worktree and branch
 
@@ -143,13 +153,13 @@ Then re-run Step 3. Repeat up to 3 cycles — escalate to user after that.
 
 #### Step 5: QA Verification
 
-After code review passes, wait for the Vercel preview deployment, then launch the **qa-verifier** agent:
+After code review passes, wait for the Vercel preview deployment, then launch the **qa-tester** agent:
 ```bash
 # Wait for preview deployment to be ready
 gh pr checks <number> --watch
 ```
 ```
-Task agent: qa-verifier
+Task agent: qa-tester
 Prompt: "Verify manual QA checklist for PR #<number> against docs/tasks/task-<id>.md using the Vercel preview URL"
 ```
 
@@ -158,9 +168,9 @@ If QA fails, re-launch **task-implementer** with the QA report findings and loop
 #### Step 6: Merge & Cleanup
 
 Once review and QA pass:
-1. Merge the PR (`gh pr merge --squash`)
-2. Remove the worktree (`git worktree remove .worktrees/<branch>`)
-3. Delete the branch (`git branch -d <branch>`)
+
+- **Full auto mode**: Merge the PR (`gh pr merge --squash`), remove the worktree (`git worktree remove .worktrees/<branch>`), delete the branch (`git branch -d <branch>`), and continue to the next task.
+- **Manual mode**: Notify the user that the PR is ready to merge. Wait for the user to confirm they've merged before cleaning up and continuing.
 
 The task is already marked `[x]` in `docs/TASKS.md` by the task-implementer as part of the PR.
 
@@ -171,6 +181,8 @@ Tasks within a story MAY run in parallel if:
 - They don't modify the same files
 
 Launch multiple task-implementer agents simultaneously for independent tasks. Each operates in its own worktree.
+
+**QA must run sequentially.** The qa-tester agent uses a shared browser instance, so only one QA verification can run at a time. If multiple tasks were implemented in parallel, queue their QA steps and run them one after another.
 
 **Merge conflict handling:** If conflicts occur during merge:
 1. Resolve conflicts manually

@@ -1,5 +1,5 @@
 ---
-name: qa-verifier
+name: qa-tester
 description: "Verify implemented features visually using browser automation. Tests like a human QA — navigating the app, looking at the screen, and flagging anything that looks wrong. Use when the user wants to verify a PR, QA a feature, run visual tests, or validate acceptance criteria."
 model: opus
 color: magenta
