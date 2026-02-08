@@ -59,7 +59,9 @@ Personal workflow for getting better results out of vibecoding.
 
 - Triggers: "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "project setup"
 - Ensures GitHub CI workflow exists for lint, typecheck, test with coverage, and build
+- Posts coverage summary comments on PRs via `vitest-coverage-report-action` or `jest-coverage-comment`
 - Sets up husky + lint-staged pre-commit hooks for lint, format, and typecheck
+- Adds Claude Code hook guard to block `--no-verify` and prevent agents from bypassing pre-commit hooks
 - Installs Vercel best practices via `npx add-skill vercel-labs/agent-skills`
 - Enforces high code coverage thresholds (80%) appropriate for LLM coding agents
 - Detects existing config and only adds what's missing
@@ -87,7 +89,8 @@ Personal workflow for getting better results out of vibecoding.
 - Triggers: "build this app", "implement an MVP", or when you want full project automation
 - Coordinates: product-design → architecture → task-decomposition skills
 - Delegates to: task-spec-generator, task-implementer, code-reviewer, and qa-tester agents
-- Implementation loop: implement → code review → fix feedback → QA verify → merge
+- Per-task loop: implement → code review → fix feedback → merge
+- Per-story QA: after all tasks in a story are merged, QA tests the complete user flow end-to-end
 - Resumable: introspects filesystem and git state to pick up where it left off if interrupted
 
 #### Agents
@@ -98,4 +101,4 @@ Personal workflow for getting better results out of vibecoding.
 
 **qa-tester** - Wraps the qa-verification skill. Visual QA via Playwright against Vercel preview URLs. Commits screenshots to the PR branch and posts a QA report with inline images as a PR comment.
 
-**task-spec-generator** - Generate individual task specification files from TASKS.md. Creates `docs/tasks/task-<id>.md` for each task with full context for implementers.
+**task-spec-generator** - Generate detailed task specifications from TASKS.md, cross-referenced with PRD and Architecture docs. Creates `docs/tasks/task-<id>.md` for each task with concrete test plans (unit, integration, edge cases) and expanded acceptance criteria.

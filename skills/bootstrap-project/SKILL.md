@@ -43,6 +43,8 @@ Configure coverage thresholds in the test runner config (e.g., `vitest.config.ts
 
 CI must **fail** if coverage drops below these thresholds. See [references/ci-workflow.md](references/ci-workflow.md) for configuration examples.
 
+Add a separate `coverage-report` job that posts a coverage summary comment on pull requests. This runs after the main CI job and uses `davelosert/vitest-coverage-report-action` (Vitest) or `MishaKav/jest-coverage-comment` (Jest). See [references/ci-workflow.md](references/ci-workflow.md) for the template and coverage reporter configuration.
+
 ### 3. Husky Pre-commit
 
 Ensure husky and lint-staged are installed and configured with checks for **lint**, **format**, and **typecheck**.
@@ -54,7 +56,21 @@ Key decisions:
 - Typecheck runs as a separate hook step (not inside lint-staged)
 - lint-staged handles per-file lint + format
 
-### 4. Vercel Best Practices
+### 4. Claude Code Hook Guard
+
+Ensure `.claude/settings.json` has a `PreToolCall` hook that blocks `--no-verify` and `--no-gpg-sign` in git commands. This prevents AI agents from bypassing pre-commit hooks.
+
+Read [references/claude-code-hooks.md](references/claude-code-hooks.md) for the configuration.
+
+If `.claude/settings.json` already exists, merge the hooks into it — do not overwrite existing settings.
+
+Also add a rule to the project's `CLAUDE.md` (create if it doesn't exist) reinforcing the instruction:
+
+```
+NEVER use --no-verify or --no-gpg-sign with git commands. Pre-commit hooks must always run. If a hook fails, fix the underlying issue instead of bypassing it.
+```
+
+### 5. Vercel Best Practices
 
 Install Vercel's agent skills for framework-specific guidance.
 
@@ -62,7 +78,7 @@ Read [references/vercel-best-practices.md](references/vercel-best-practices.md) 
 
 Skip if the project doesn't use Vercel or a Vercel-supported framework.
 
-### 5. Verify
+### 6. Verify
 
 After setup, verify everything works:
 
