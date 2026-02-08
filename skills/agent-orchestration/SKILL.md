@@ -70,8 +70,8 @@ Detected state:
 
 Before starting Phase 3, ask the user to choose a merge mode:
 
-- **Full auto**: After review and QA pass, automatically merge the PR, clean up the worktree/branch, and continue to the next task.
-- **Manual**: After review and QA pass, stop and wait for the user to merge the PR themselves before continuing to the next task.
+- **Full auto**: After code review passes, automatically merge the PR, clean up the worktree/branch, and continue. QA runs after all tasks in a story are merged.
+- **Manual**: After code review passes, stop and wait for the user to merge the PR themselves before continuing. QA still runs automatically after all tasks in the story are merged.
 
 Remember the chosen mode for the duration of the run. Default to asking if not previously set (including on resume).
 
@@ -89,14 +89,16 @@ Phase 2: Task Spec Generation
   → Launch task-spec-generator → creates docs/tasks/task-<id>.md
 
 Phase 3: Implementation Loop
-  For each task (in dependency order):
-    1. Determine task doc from TASKS.md
-    2. Launch task-implementer agent → creates worktree, tests, implements, opens PR
-    3. Launch code-reviewer agent
-    4. If REQUEST CHANGES → re-launch task-implementer, re-review (up to 3 cycles)
-    5. Launch qa-tester agent against Vercel preview
-    6. If QA fails → re-launch task-implementer, loop back to step 3
-    7. Merge PR, cleanup worktree and branch
+  For each story:
+    For each task in the story (in dependency order):
+      1. Determine task doc from TASKS.md
+      2. Launch task-implementer agent → creates worktree, tests, implements, opens PR
+      3. Launch code-reviewer agent
+      4. If REQUEST CHANGES → re-launch task-implementer, re-review (up to 3 cycles)
+      5. Merge PR, cleanup worktree and branch
+    After all tasks in the story are merged:
+      6. Launch qa-tester agent against main branch deployment
+      7. If QA fails → create fix task, implement, review, merge, re-QA
 
 Phase 4: Completion
   → All tasks done, optionally tag release
@@ -117,13 +119,17 @@ This creates `docs/tasks/task-<id>.md` for each task (e.g., `task-1.1.1.md`, `ta
 
 **IMPORTANT**: For the implementation loop, use subagents not skills!
 
-### For each task:
+Process stories in order. Within each story, implement all tasks, then QA the story as a whole.
 
-#### Step 1: Determine Task Doc
+### For each story:
 
-Read the next unchecked task from `docs/TASKS.md` (in dependency order). Locate its spec at `docs/tasks/task-<id>.md`.
+#### Task Loop (repeat for each task in the story)
 
-#### Step 2: Implement
+##### Step 1: Determine Task Doc
+
+Read the next unchecked task in this story from `docs/TASKS.md` (in dependency order). Locate its spec at `docs/tasks/task-<id>.md`.
+
+##### Step 2: Implement
 
 Launch the **task-implementer** agent:
 ```
@@ -133,7 +139,7 @@ Prompt: "Implement task <id> from docs/tasks/task-<id>.md"
 
 The agent creates a worktree, writes tests, implements, and opens a PR.
 
-#### Step 3: Code Review
+##### Step 3: Code Review
 
 Launch the **code-reviewer** agent on the PR:
 ```
@@ -141,7 +147,7 @@ Task agent: code-reviewer
 Prompt: "Review PR #<number> against docs/tasks/task-<id>.md"
 ```
 
-#### Step 4: Address Feedback (if REQUEST CHANGES)
+##### Step 4: Address Feedback (if REQUEST CHANGES)
 
 If the reviewer requests changes, re-launch **task-implementer** — the Review Feedback section in the task spec tells it what to fix:
 ```
@@ -151,28 +157,41 @@ Prompt: "Address review feedback for task <id>"
 
 Then re-run Step 3. Repeat up to 3 cycles — escalate to user after that.
 
-#### Step 5: QA Verification
+##### Step 5: Merge & Cleanup
 
-After code review passes, wait for the Vercel preview deployment, then launch the **qa-tester** agent:
-```bash
-# Wait for preview deployment to be ready
-gh pr checks <number> --watch
-```
-```
-Task agent: qa-tester
-Prompt: "Verify manual QA checklist for PR #<number> against docs/tasks/task-<id>.md using the Vercel preview URL"
-```
+Once code review passes:
 
-If QA fails, re-launch **task-implementer** with the QA report findings and loop back to Step 3.
-
-#### Step 6: Merge & Cleanup
-
-Once review and QA pass:
-
-- **Full auto mode**: Merge the PR (`gh pr merge --squash`), remove the worktree (`git worktree remove .worktrees/<branch>`), delete the branch (`git branch -d <branch>`), and continue to the next task.
+- **Full auto mode**: Merge the PR (`gh pr merge --squash`), remove the worktree (`git worktree remove .worktrees/<branch>`), delete the branch (`git branch -d <branch>`), and continue to the next task in the story.
 - **Manual mode**: Notify the user that the PR is ready to merge. Wait for the user to confirm they've merged before cleaning up and continuing.
 
 The task is already marked `[x]` in `docs/TASKS.md` by the task-implementer as part of the PR.
+
+#### Story QA (after all tasks in the story are merged)
+
+##### Step 6: QA Verification
+
+Once all tasks in the story are merged to main, run QA against the full story. QA tests the user flow end-to-end — individual tasks don't have enough context for meaningful QA.
+
+Wait for the deployment to be ready, then launch the **qa-tester** agent:
+```bash
+# Wait for main branch deployment to be ready
+# Use production/staging URL or Vercel deployment for main
+```
+```
+Task agent: qa-tester
+Prompt: "Verify story <story-id> acceptance criteria against <deployment-url>. Test the complete user flow: <summarize the story's user flow from TASKS.md>"
+```
+
+The QA prompt must include the story's acceptance criteria and describe the user flow to test, since there is no single task doc to reference.
+
+##### Step 7: Handle QA Failure
+
+If QA fails, create a fix task scoped to the QA findings:
+
+1. Create a new task spec at `docs/tasks/task-<story-id>-fix.md` with the QA report findings as acceptance criteria
+2. Run the task through the standard task loop (Steps 2-5: implement → review → merge)
+3. Re-run Story QA (Step 6)
+4. If QA fails again after 2 fix cycles, escalate to user
 
 ### Parallel Execution
 
@@ -182,7 +201,7 @@ Tasks within a story MAY run in parallel if:
 
 Launch multiple task-implementer agents simultaneously for independent tasks. Each operates in its own worktree.
 
-**QA must run sequentially.** The qa-tester agent uses a shared browser instance, so only one QA verification can run at a time. If multiple tasks were implemented in parallel, queue their QA steps and run them one after another.
+**Story QA runs after all tasks in the story are merged**, so parallel task execution does not affect QA scheduling.
 
 **Merge conflict handling:** If conflicts occur during merge:
 1. Resolve conflicts manually
