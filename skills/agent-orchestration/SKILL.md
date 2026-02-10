@@ -159,10 +159,17 @@ Then re-run Step 3. Repeat up to 3 cycles — escalate to user after that.
 
 ##### Step 5: Merge & Cleanup
 
-Once code review passes:
+Once code review passes, wait for all CI checks to pass before merging:
 
-- **Full auto mode**: Merge the PR (`gh pr merge --squash`), remove the worktree (`git worktree remove .worktrees/<branch>`), delete the branch (`git branch -d <branch>`), and continue to the next task in the story.
-- **Manual mode**: Notify the user that the PR is ready to merge. Wait for the user to confirm they've merged before cleaning up and continuing.
+```bash
+# Wait for CI checks to complete and pass (times out after 10 minutes)
+gh pr checks <number> --watch --fail-fast
+```
+
+If checks fail, inspect the failures, fix the issues (re-launch task-implementer if needed), and wait for checks again. Do not merge until all checks pass.
+
+- **Full auto mode**: After checks pass, merge the PR (`gh pr merge --squash`), remove the worktree (`git worktree remove .worktrees/<branch>`), delete the branch (`git branch -d <branch>`), and continue to the next task in the story.
+- **Manual mode**: After checks pass, notify the user that the PR is ready to merge. Wait for the user to confirm they've merged before cleaning up and continuing.
 
 The task is already marked `[x]` in `docs/TASKS.md` by the task-implementer as part of the PR.
 

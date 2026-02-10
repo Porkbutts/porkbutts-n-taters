@@ -89,7 +89,7 @@ Personal workflow for getting better results out of vibecoding.
 - Triggers: "build this app", "implement an MVP", or when you want full project automation
 - Coordinates: product-design → architecture → task-decomposition skills
 - Delegates to: task-spec-generator, task-implementer, code-reviewer, and qa-tester agents
-- Per-task loop: implement → code review → fix feedback → merge
+- Per-task loop: implement → code review → fix feedback → wait for CI checks → merge
 - Per-story QA: after all tasks in a story are merged, QA tests the complete user flow end-to-end
 - Resumable: introspects filesystem and git state to pick up where it left off if interrupted
 
