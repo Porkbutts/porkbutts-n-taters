@@ -1,11 +1,11 @@
 ---
 name: bootstrap-project
-description: Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices. Use when setting up a new project, adding CI pipelines, configuring husky/lint-staged, or applying Vercel best practices. Triggers on "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "setup linting", "add code coverage", "project setup", or when starting a new codebase that needs infrastructure.
+description: Bootstrap a project with CI/CD, pre-commit hooks, CLAUDE.md, and framework best practices. Use when setting up a new project, adding CI pipelines, configuring husky/lint-staged, initializing CLAUDE.md, or applying Vercel best practices. Triggers on "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "setup linting", "add code coverage", "project setup", "init CLAUDE.md", or when starting a new codebase that needs infrastructure.
 ---
 
 # Project Bootstrap
 
-Ensure a project has CI, pre-commit hooks, and framework best practices configured. Detect what exists, add what's missing.
+Ensure a project has CI, pre-commit hooks, CLAUDE.md, and framework best practices configured. Detect what exists, add what's missing.
 
 ## Workflow
 
@@ -70,7 +70,32 @@ Also add a rule to the project's `CLAUDE.md` (create if it doesn't exist) reinfo
 NEVER use --no-verify or --no-gpg-sign with git commands. Pre-commit hooks must always run. If a hook fails, fix the underlying issue instead of bypassing it.
 ```
 
-### 5. Vercel Best Practices
+### 5. Initialize CLAUDE.md
+
+Generate a project-level `CLAUDE.md` that gives Claude (and other AI agents) the context they need to work effectively in this codebase. If `CLAUDE.md` already exists, merge new sections into it — do not overwrite existing content.
+
+**Gather context first:**
+- Read `package.json` for project name, description, scripts, and dependencies
+- Read `README.md` (if it exists) for project purpose and setup instructions
+- Read `docs/PRD.md` and `docs/ARCHITECTURE.md` (if they exist) for domain and design context
+- Scan the top-level directory structure and key source directories to understand the layout
+- Check for frameworks, ORMs, and major libraries in dependencies
+
+**Write the following sections:**
+
+1. **Project overview** — One-paragraph description of what this project is, its purpose, and its primary technology stack.
+
+2. **Architecture** — Brief summary of the architecture (monolith, monorepo, client-server, etc.), key directories, and how they relate. Reference `docs/ARCHITECTURE.md` if it exists rather than duplicating it.
+
+3. **Key commands** — List the common development commands (`dev`, `build`, `test`, `lint`, `typecheck`, `format`) with the correct package manager prefix. Only include commands that actually exist in `package.json` scripts.
+
+4. **Code style and conventions** — Note any conventions visible from the codebase: naming patterns (kebab-case files, PascalCase components), import style (absolute vs relative), test file location (`__tests__/` vs co-located `.test.ts`), and any linter/formatter config.
+
+5. **Rules** — Mandatory rules for AI agents working in this repo. Always include the hook guard rule from step 4. Add any other rules derived from the project's linter config or existing `CLAUDE.md` content.
+
+Keep the file concise — aim for under 80 lines. Prefer short bullet points over prose. Do not include information that's already obvious from file names or standard framework conventions.
+
+### 6. Vercel Best Practices
 
 Install Vercel's agent skills for framework-specific guidance.
 
@@ -78,7 +103,7 @@ Read [references/vercel-best-practices.md](references/vercel-best-practices.md) 
 
 Skip if the project doesn't use Vercel or a Vercel-supported framework.
 
-### 6. Verify
+### 7. Verify
 
 After setup, verify everything works:
 
