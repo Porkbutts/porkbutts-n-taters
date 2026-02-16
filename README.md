@@ -55,13 +55,14 @@ Personal workflow for getting better results out of vibecoding.
 - Reads from `docs/PRD.md` and `docs/ARCHITECTURE.md`, outputs `docs/TASKS.md`
 - Structure: Epics → User Stories → Atomic Tasks with acceptance criteria and test approaches
 
-**bootstrap-project** - Bootstrap a project with CI/CD, pre-commit hooks, and framework best practices.
+**bootstrap-project** - Bootstrap a project with CI/CD, pre-commit hooks, CLAUDE.md, and framework best practices.
 
-- Triggers: "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "project setup"
+- Triggers: "bootstrap project", "setup CI", "add pre-commit hooks", "add husky", "project setup", "init CLAUDE.md"
 - Ensures GitHub CI workflow exists for lint, typecheck, test with coverage, and build
 - Posts coverage summary comments on PRs via `vitest-coverage-report-action` or `jest-coverage-comment`
 - Sets up husky + lint-staged pre-commit hooks for lint, format, and typecheck
 - Adds Claude Code hook guard to block `--no-verify` and prevent agents from bypassing pre-commit hooks
+- Generates a `CLAUDE.md` with project overview, architecture summary, key commands, code conventions, and rules — derived from app description, docs, and file structure
 - Installs Vercel best practices via `npx add-skill vercel-labs/agent-skills`
 - Enforces high code coverage thresholds (80%) appropriate for LLM coding agents
 - Detects existing config and only adds what's missing
