@@ -85,6 +85,13 @@ Personal workflow for getting better results out of vibecoding.
 - Output: Structured verdict (APPROVE / REQUEST CHANGES) with evidence per criterion and a Manual QA Checklist
 - Posts review findings as a comment on the PR via `gh pr comment`
 
+**brand-generator** - Generate unique, ownable brand names with verified-available domains through structured discovery and linguistic construction.
+
+- Triggers: "help me name", "brand name", "find a domain", "name my startup", "product naming", "what should I call this"
+- Phases: Discovery Interview → Name Generation (20-25 candidates using linguistic construction patterns) → Domain Verification (whois batch check) → Score & Web Validate → Present Shortlist
+- Includes naming framework with semantic root generation, phonetic rules, quality scoring matrix, and risk filters
+- Bundled `check_domain.sh` script for batch domain availability checks
+
 **agent-orchestration** - End-to-end project orchestration from idea to implementation.
 
 - Triggers: "build this app", "implement an MVP", or when you want full project automation
